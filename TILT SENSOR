@@ -1,0 +1,34 @@
+int sensor = 2;                 // tilt sensor as input pin
+int LED = 4;                    // led as output pin
+
+boolean switchState = false;   
+int sensorState=0;              // current state
+
+void setup()
+{
+pinMode(sensor, INPUT);
+digitalWrite(sensor, HIGH);      //set the sensor as HIGH
+pinMode(LED, OUTPUT);
+}
+
+void loop()
+{
+sensorState=digitalRead(sensor); //read value of the sensor either high or low
+
+if(sensorState==HIGH)            //when tilt switch lays flat 
+{
+  if(switchState==false)
+    switchState=true;
+  else
+    switchState=false;
+}
+if(switchState==true)
+{
+  digitalWrite(LED,HIGH);          
+}
+else
+{
+  digitalWrite(LED, LOW);      //when switch tilt on some angle 
+}
+delay(100);
+}
