@@ -1,0 +1,85 @@
+#include <LiquidCrystal.h>
+#include <SoftwareSerial.h>
+LiquidCrystal lcd(10, 11, 4, 5, 6, 7);
+const int relay1Pin = A4;
+char i;
+char j;
+String card;
+String card1;
+int relay1State = 0;
+int count = 0;
+int count1 = 0;
+char c;
+int cardstatus = 0;
+SoftwareSerial rfid(12, 13);
+
+void setup()
+{
+  pinMode(relay1Pin, OUTPUT);
+  relay1State = LOW;
+  digitalWrite(relay1Pin, relay1State);
+  Serial.begin(9600);
+  rfid.begin(9600);
+  lcd.begin(16, 2);
+  lcd.print(" Arduino - IoT");  //Display this in first line
+  lcd.setCursor(0, 1);
+  lcd.print("Development Kit");   //Display this in second line
+  delay(1000);
+}
+
+void loop()
+{
+
+label0:
+  //=========================================
+  if (rfid.available() > 0)
+  {
+    delay(300);
+label2:
+    i = rfid.read();
+    delay(50);
+    card = card + i;
+    delay(50);
+    count++;
+    delay(50);
+    if (count == 12)
+    {
+      count = 0;
+      Serial.println(card);
+      delay(100);
+      goto checkrfid;
+    }
+    goto label2;
+  }
+  goto label0;
+
+checkrfid:
+
+  if (card == "1E00313AF1E4")
+  {
+      lcd.clear();
+      relay1State = HIGH;
+  digitalWrite(relay1Pin, relay1State);
+    lcd.print("DOOR IS OPEN");
+    card = "";
+    Serial.flush();
+    delay(1000);
+    goto label0;
+    lcd.clear();
+  }
+
+  else
+  {
+    lcd.clear();
+    relay1State = LOW;
+  digitalWrite(relay1Pin, relay1State);
+    lcd.print("ACCESS DENIED");
+    card = "";
+    Serial.flush();
+    delay(1000);
+    goto label0;
+    lcd.clear();
+  }
+
+
+}
