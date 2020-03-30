@@ -36,7 +36,7 @@ void loop()
 
  else if(x<300)
   {
-  lcd.print("ls");
+  lcd.print("left");
   }
 
 }
